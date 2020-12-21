@@ -44,7 +44,9 @@ create_table_statement = """CREATE TABLE `Ticker` (
 engine.execute(create_table_statement)
 
 URI = 'wss://ws-feed.pro.coinbase.com'
-req = '{"type": "subscribe", "product_ids": ["BTC-USD","ETH-USD","XRP-USD","LTC-USD","BCH-USD"], "channels": ["level2", "heartbeat", {"name": "ticker", "product_ids": ["BTC-USD","ETH-USD","XRP-USD","LTC-USD","BCH-USD"]}]}'
+with open('request.json', 'r') as file:
+    req = file.read().replace('\n', '')
+
 ws = websocket.create_connection(URI)
 ws.send(req)
 
@@ -53,6 +55,8 @@ batch_size = 5
 while True:
    result = ws.recv()
    result_dict = json.loads(result)
+   if result_dict['type'] == 'ticker':
+      print(result)
    for key in result_dict.keys():
       result_dict[key] = [result_dict[key]]
 
@@ -60,7 +64,6 @@ while True:
       result_dict['time'][0] = result_dict['time'][0].replace('T',' ').replace('Z','');
       if ticker_df is None:
          ticker_df = pd.DataFrame(data = result_dict)
-         print(ticker_df)
       else:
          ticker_df = ticker_df.append(pd.DataFrame(data = result_dict))
          if ticker_df.shape[0] % batch_size == 0:             

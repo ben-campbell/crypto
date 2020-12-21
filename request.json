@@ -1,0 +1,1 @@
+{"type": "subscribe", "product_ids": ["BTC-USD","ETH-USD","XRP-USD","LTC-USD","BCH-USD"], "channels": ["level2", "heartbeat", {"name": "ticker", "product_ids": ["BTC-USD","ETH-USD","XRP-USD","LTC-USD","BCH-USD"]}]}
